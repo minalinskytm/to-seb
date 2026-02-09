@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Valentine's Confession</title>
+
+  <!-- Journal-style font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600&display=swap" rel="stylesheet">
+
+  <!-- EmailJS -->
+  <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js" defer></script>
+
+  <style>
+    body {
+      font-family: 'Caveat', cursive;
+      background: linear-gradient(135deg, #ffb3c6, #ffe5ec);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0;
+      padding: 20px;
+    }
+    .card {
+      background: white;
+      padding: 35px;
+      border-radius: 20px;
+      text-align: center;
+      max-width: 650px;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+    }
+    h1 {
+      color: #e63946;
+      margin-bottom: 20px;
+      font-size: 36px;
+    }
+    .letter {
+      font-size: 20px;
+      line-height: 1.9;
+      color: #333;
+      text-align: left;
+      margin-bottom: 30px;
+      white-space: pre-line;
+    }
+    .question {
+      font-size: 22px;
+      font-weight: bold;
+      color: #e63946;
+      margin-bottom: 20px;
+    }
+    button {
+      font-size: 18px;
+      padding: 10px 25px;
+      border: none;
+      border-radius: 25px;
+      cursor: pointer;
+      margin: 8px;
+    }
+    .yes { background-color: #ff4d6d; color: white; }
+    .maybe { background-color: #ffb703; color: white; }
+    .no { background-color: #adb5bd; color: white; }
+
+    #response {
+      margin-top: 25px;
+      font-size: 20px;
+      font-weight: bold;
+      color: #e63946;
+      min-height: 1.5em;
+    }
+
+    .signature {
+      display: none;
+      margin-top: 20px;
+      font-family: 'Brush Script MT', 'Segoe Script', cursive;
+      font-size: 22px;
+      color: #e63946;
+    }
+
+    .fade-in {
+      animation: fadeIn 0.8s ease forwards;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>To Seb 💌</h1>
+
+    <div class="letter fade-in">
+The three-week rhythm slows down to a steady, quiet beat,
+And the gift I made is finished, though the "us" feels incomplete.
+I’m pressing this into your hand—a name, a thread, a sign,
+That even if I can't be his, I’m glad that he was once mine.
+
+I’m handing you this confession, a tangible piece of me,
+To bridge the gap between who I am and who you want to see.
+The website is yours to answer, or don’t mind away,
+But I’ll still be the same girl you matched with that first day.
+
+I’m not saying goodbye—I promised never to leave,
+When the truth is a thing you surely believe.
+If I can’t be the girl you love, the one you chose to see,
+I’ll be the one who listens when you need some company.
+
+No pressure and no fighting for a part,
+A memory living somewhere in your heart.
+Because if I don't know how to love you the way I used to do…
+I’ll just be the one who’s always there, supporting you.
+
+<span class="signature">— From Revi</span>
+    </div>
+
+    <div class="question">Would you like to be a part of my Valentine?</div>
+
+    <button class="yes" onclick="respond('yes')">Yes</button>
+    <button class="maybe" onclick="respond('maybe')">Maybe</button>
+    <button class="no" onclick="respond('no')">No</button>
+
+    <div id="response"></div>
+  </div>
+
+  <script>
+    // CONFIGURATION
+    const EMAILJS_PUBLIC_KEY = 'h4w0Dw31TxrJDB-0e';
+    const EMAILJS_SERVICE_ID = 'service_09s7zhu'; // ← REQUIRED: put your real service ID here
+    const EMAILJS_TEMPLATE_ID = 'template_6786d8w';
+
+    document.addEventListener('DOMContentLoaded', () => {
+      if (window.emailjs) {
+        emailjs.init(EMAILJS_PUBLIC_KEY);
+      }
+    });
+
+    function respond(answer) {
+      const responseEl = document.getElementById('response');
+      const signature = document.querySelector('.signature');
+
+      if (localStorage.getItem('emailSent') === 'true') return;
+
+      localStorage.setItem('valentineAnswer', answer);
+
+      const messages = {
+        yes: "i'm glad that you accept my delight. i won't miss this chance, i promise you. <33",
+        maybe: "don't worry, it's okay. i have no intention to pressure you anyway. thanks for giving this a time. ;))",
+        no: "that's okay, atleast you try to find time to this. it hurts, but i'll be happy to whatever you chose. :))"
+      };
+
+      responseEl.innerText = messages[answer] || '';
+      signature.style.display = 'block';
+      signature.classList.add('fade-in');
+
+      // SAFETY CHECK: prevent EmailJS crash if service ID is missing
+      if (!EMAILJS_SERVICE_ID) {
+        console.warn('EmailJS service ID is missing. Email not sent.');
+        return;
+      }
+
+      emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+        to_email: 'delacruzrevi@gmail.com',
+        answer: answer
+      }).then(() => {
+        localStorage.setItem('emailSent', 'true');
+      }).catch(err => {
+        console.error('EmailJS error:', err);
+      });
+    }
+  </script>
+</body>
+</html>
